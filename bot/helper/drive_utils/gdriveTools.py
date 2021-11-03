@@ -11,7 +11,7 @@ from googleapiclient.errors import HttpError
 
 from telegram import InlineKeyboardMarkup
 from bot.helper.telegram_helper import button_builder
-from bot import DRIVE_NAME, DRIVE_ID, INDEX_URL, INVITE_LINK, USERNAME, telegraph_token
+from bot import DRIVE_NAME, DRIVE_ID, INDEX_URL, INVITE_LINK, telegraph_token
 
 LOGGER = logging.getLogger(__name__)
 logging.getLogger('googleapiclient.discovery').setLevel(logging.ERROR)
@@ -143,7 +143,7 @@ class GoogleDriveHelper:
                     add_title_msg = False
                 msg+= f"<a href='http://t.me/irupc_adminbot'>Click Here to notify admins if <b>Team Drive Invite Links</b> OR <b>Index Passwords</b> has expired</a>-----<br><br>"
                 msg += f"╾──╼<br><b>{DRIVE_NAME[INDEX]}</b>╾──╼<br>"
-                msg+= f"<b><a href='{INVITE_LINK}'>✅To Join Team-Drive</a></b> | <b><a href='{USERNAME}'>🤫 Username & Password of Index</a></b><br>"
+                msg+= f"<b><a href='{INVITE_LINK}'>✅To Join Team-Drive</b> | <b>🤫 Username & Password of Index</b></a><br>"
                 for file in response:
                     if file.get('mimeType') == "application/vnd.google-apps.folder":  # Detect Whether Current Entity is a Folder or File.
                         msg += f"📁 <code>{file.get('name')}</code> <b>(folder)</b><br>" \
