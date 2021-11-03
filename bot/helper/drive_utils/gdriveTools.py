@@ -11,7 +11,7 @@ from googleapiclient.errors import HttpError
 
 from telegram import InlineKeyboardMarkup
 from bot.helper.telegram_helper import button_builder
-from bot import DRIVE_NAME, DRIVE_ID, INDEX_URL, telegraph_token
+from bot import DRIVE_NAME, DRIVE_ID, INDEX_URL, INVITE_LINK, USERNAME, telegraph_token
 
 LOGGER = logging.getLogger(__name__)
 logging.getLogger('googleapiclient.discovery').setLevel(logging.ERROR)
@@ -139,9 +139,11 @@ class GoogleDriveHelper:
             response = self.drive_query(parent_id, fileName)
             if response:
                 if add_title_msg:
-                    msg = f'<h3>Search Results for: {fileName}</h3><br>drive-searchbot<br><br>'
+                    msg = f'<h3>Search Results for: {fileName}</h3><br>'
                     add_title_msg = False
-                msg += f"╾────────────╼<br><b>{DRIVE_NAME[INDEX]}</b><br>╾────────────╼<br>"
+                msg+= f"<a href='http://t.me/irupc_adminbot'>Click Here to notify admins if <b>Team Drive Invite Links</b> OR <b>Index Passwords</b> has expired</a>-----<br><br>"
+                msg += f"╾──╼<br><b>{DRIVE_NAME[INDEX]}</b>╾──╼<br>"
+                msg+= f"<b><a href='{INVITE_LINK}'>✅To Join Team-Drive</a></b> | <b><a href='{USERNAME}'>🤫 Username & Password of Index</a></b><br>"
                 for file in response:
                     if file.get('mimeType') == "application/vnd.google-apps.folder":  # Detect Whether Current Entity is a Folder or File.
                         msg += f"📁 <code>{file.get('name')}</code> <b>(folder)</b><br>" \
@@ -155,8 +157,12 @@ class GoogleDriveHelper:
                             url = f'{INDEX_URL[INDEX]}/{url_path}/'
                             msg += f'<b> | <a href="{url}">Index Link</a></b>'
                     else:
-                        msg += f"📄 <code>{file.get('name')}</code> <b>({self.get_readable_file_size(file.get('size'))})</b><br>" \
-                               f"<b><a href='https://drive.google.com/uc?id={file.get('id')}&export=download'>Drive Link</a></b>"
+                        if file.get('mimeType') == "video/x-matroska" or file.get('mimeType') == "video/mp4" or file.get('mimeType') == "video/avi":
+                            msg += f"🎬 <code>{file.get('name')}</code> <b>({self.get_readable_file_size(file.get('size'))})</b><br>" \
+                                   f"<b><a href='https://drive.google.com/uc?id={file.get('id')}&export=download'>Drive Link</a></b>"
+                        else:
+                            msg += f"📄 <code>{file.get('name')}</code> <b>({self.get_readable_file_size(file.get('size'))})</b><br>" \
+                                   f"<b><a href='https://drive.google.com/uc?id={file.get('id')}&export=download'>Drive Link</a></b>"
                         if INDEX_URL[INDEX] is not None:
                             url_path = "/".join([requests.utils.quote(n, safe ='') for n in self.get_recursive_list(file, parent_id)])
                             url = f'{INDEX_URL[INDEX]}/{url_path}'
@@ -176,9 +182,9 @@ class GoogleDriveHelper:
 
         for content in self.telegraph_content :
             self.path.append(Telegraph(access_token=telegraph_token).create_page(
-                                                    title = 'Drive Search',
-                                                    author_name='drive-searchbot',
-                                                    author_url='https://github.com/breakdowns/drive-searchbot',
+                                                    title = 'G-Drive Search Results',
+                                                    author_name='@index_linkbot',
+                                                    author_url='http://t.me/index_linkbot',
                                                     html_content=content
                                                     )['path'])
 
@@ -188,6 +194,6 @@ class GoogleDriveHelper:
 
         msg = f"<b>Search Results For</b> <code>{fileName}</code>"
         buttons = button_builder.ButtonMaker()
-        buttons.buildbutton("VIEW", f"https://telegra.ph/{self.path[0]}")
+        buttons.buildbutton("🔍 View Results 👈", f"https://telegra.ph/{self.path[0]}")
 
         return msg, InlineKeyboardMarkup(buttons.build_menu(1))
