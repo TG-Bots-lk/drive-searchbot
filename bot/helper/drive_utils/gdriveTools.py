@@ -141,9 +141,9 @@ class GoogleDriveHelper:
                 if add_title_msg:
                     msg = f'<h3>Search Results for: {fileName}</h3><br>'
                     add_title_msg = False
-                msg+= f"<a href='http://t.me/irupc_adminbot'>Click Here to notify admins if <b>Team Drive Invite Links</b> OR <b>Index Passwords</b> has expired</a>-----<br><br>"
+                msg += f"<a href='http://t.me/irupc_adminbot'>Click Here to notify admins if <b>Team Drive Invite Links</b> has expired</a>-----<br><br>"
                 msg += f"╾──╼<br><b>{DRIVE_NAME[INDEX]}</b>╾──╼<br>"
-                msg+= f"<b><a href='{INVITE_LINK}'>✅To Join Team-Drive</b> | <b>🤫 Username & Password of Index</b></a><br>"
+                msg += f"<b><a href='{INVITE_LINK}'>✅To Join Team-Drive</a></b><br><b>Index Username 👉 <code>irupc</code> | Index Password 👉 <code>bot</code><br>"
                 for file in response:
                     if file.get('mimeType') == "application/vnd.google-apps.folder":  # Detect Whether Current Entity is a Folder or File.
                         msg += f"📁 <code>{file.get('name')}</code> <b>(folder)</b><br>" \
